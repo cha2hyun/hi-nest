@@ -10,8 +10,12 @@ describe('MoviesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [MoviesService],
     }).compile();
-
     service = module.get<MoviesService>(MoviesService);
+    service.create({
+      title: 'Test Movie',
+      genres: ['test'],
+      year: 2000,
+    });
   });
 
   it('should be defined', () => {
@@ -22,20 +26,15 @@ describe('MoviesService', () => {
     expect(2 + 2).toEqual(4);
   });
 
-  describe('getAll()', () => {
+  describe('getAll', () => {
     it('should return an array', () => {
       const result = service.getAll();
       expect(result).toBeInstanceOf(Array);
     });
   });
 
-  describe('getOne()', () => {
+  describe('getOne', () => {
     it('should return a movie', () => {
-      service.create({
-        title: 'Test Movie',
-        genres: ['test'],
-        year: 2000,
-      });
       const movie = service.getOne(1);
       expect(movie).toBeDefined();
       expect(movie.id).toEqual(1);
@@ -52,17 +51,12 @@ describe('MoviesService', () => {
 
   describe('deleteOne', () => {
     it('deletes a movie', () => {
-      service.create({
-        title: 'Test Movie',
-        genres: ['test'],
-        year: 2000,
-      });
       const beforeDelete = service.getAll().length;
       service.deleteOne(1);
       const afterDelete = service.getAll().length;
       expect(afterDelete).toBeLessThan(beforeDelete);
     });
-    it('should return a 404', () => {
+    it('should thorw notFoundException', () => {
       try {
         service.deleteOne(999);
       } catch (e) {
@@ -82,6 +76,21 @@ describe('MoviesService', () => {
       });
       const afterCreate = service.getAll().length;
       expect(afterCreate).toBeGreaterThan(beforeCreate);
+    });
+  });
+
+  describe('update', () => {
+    it('should update a movie', () => {
+      service.update(1, { title: 'Updated' });
+      const movie = service.getOne(1);
+      expect(movie.title).toEqual('Updated');
+    });
+    it('should thorw notFoundException', () => {
+      try {
+        service.update(999, {});
+      } catch (e) {
+        expect(e).toBeInstanceOf(NotFoundException);
+      }
     });
   });
 });
