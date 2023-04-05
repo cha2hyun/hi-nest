@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { MoviesController } from './movies/movies.controller';
-import { MoviesService } from './movies/movies.service';
+import { MoviesModule } from './movies/movies.module';
+import { AppController } from './app.controller';
 
 @Module({
-  imports: [],
-  controllers: [MoviesController],
-  providers: [MoviesService],
+  imports: [MoviesModule],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}
 
@@ -18,4 +18,6 @@ export class AppModule {}
 #2
 nest cli
 컨트롤러 생성 : nest g co (자동으로 앱 모듈에 임포트됨)
+서비스 생성 : nest g s
+모듈 생성 :nest g mo
 */
